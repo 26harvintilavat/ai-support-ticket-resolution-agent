@@ -1,4 +1,36 @@
+[project]
+name = "ai-support-ticket-resolution-agent"
+version = "0.1.0"
+description = "Evidence-driven AI support ticket resolution agent using RAG and agentic workflows."
+requires-python = ">=3.12,<3.13"
+dependencies = []
+
 [dependency-groups]
 dev = [
-    "pytest>=9.1.1",
+    "pytest>=9.0,<10",
+    "ruff>=0.14,<1",
 ]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = [
+    "-ra",
+    "--strict-config",
+    "--strict-markers",
+]
+
+[tool.ruff]
+target-version = "py312"
+line-length = 100
+extend-exclude = [
+    "PROJECT_CONTEXT.md",
+    "docs",
+]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+line-ending = "auto"
