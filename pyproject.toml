@@ -3,16 +3,23 @@ name = "ai-support-ticket-resolution-agent"
 version = "0.1.0"
 description = "Evidence-driven AI support ticket resolution agent using RAG and agentic workflows."
 requires-python = ">=3.12,<3.13"
-dependencies = []
+dependencies = [
+    "fastapi>=0.141.1",
+    "httpx2>=2.13.0",
+    "pydantic-settings>=2.15.0",
+    "uvicorn>=0.53.0",
+]
 
 [dependency-groups]
 dev = [
+    "httpx>=0.28.1",
     "pytest>=9.0,<10",
     "ruff>=0.14,<1",
 ]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+pythonpath = ["."]
 addopts = [
     "-ra",
     "--strict-config",
