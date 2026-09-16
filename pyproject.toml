@@ -4,9 +4,11 @@ version = "0.1.0"
 description = "Evidence-driven AI support ticket resolution agent using RAG and agentic workflows."
 requires-python = ">=3.12,<3.13"
 dependencies = [
+    "asyncpg>=0.31.0",
     "fastapi>=0.141.1",
     "httpx2>=2.13.0",
     "pydantic-settings>=2.15.0",
+    "sqlalchemy[asyncio]>=2.0,<2.1",
     "uvicorn>=0.53.0",
 ]
 

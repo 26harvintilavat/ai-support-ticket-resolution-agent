@@ -10,6 +10,8 @@ class Settings(BaseSettings):
     version: str = "0.1.0"
     environment: str = "development"
 
+    database_url: str = "postgresql+asyncpg://postgres:postgres@127.0.0.1:5432/support_agent"
+
     model_config = SettingsConfigDict(
         env_prefix="APP_",
         env_file=".env",
