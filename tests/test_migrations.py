@@ -6,7 +6,6 @@ from unittest.mock import patch
 from alembic.config import Config
 from alembic.script import ScriptDirectory
 
-
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 
 MIGRATIONS_DIRECTORY = PROJECT_ROOT / "migrations"
