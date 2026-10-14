@@ -20,6 +20,7 @@ dev = [
     "ruff>=0.14,<1",
 ]
 
+
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 pythonpath = ["."]
@@ -27,6 +28,10 @@ addopts = [
     "-ra",
     "--strict-config",
     "--strict-markers",
+]
+
+markers = [
+    "integration: tests requiring an isolated PostgreSQL database",
 ]
 
 [tool.ruff]

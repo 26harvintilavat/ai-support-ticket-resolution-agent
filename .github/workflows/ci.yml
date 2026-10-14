@@ -1,0 +1,75 @@
+name: Foundation CI
+
+on:
+  push:
+    branches:
+      - main
+      - "phase/**"
+  pull_request:
+    branches:
+      - main
+      - "phase/**"
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: Lint, Test and Database Verification
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    env:
+      APP_ENVIRONMENT: test
+      APP_DATABASE_URL: postgresql+asyncpg://postgres:postgres@127.0.0.1:5432/support_agent_test
+      TEST_DATABASE_URL: postgresql+asyncpg://postgres:postgres@127.0.0.1:5432/support_agent_test
+
+    services:
+      postgres:
+        image: pgvector/pgvector:0.8.6-pg17-bookworm
+
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: support_agent_test
+
+        ports:
+          - 5432:5432
+
+        options: >-
+          --health-cmd "pg_isready -U postgres -d support_agent_test"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v6
+        with:
+          enable-cache: true
+
+      - name: Install locked dependencies
+        run: uv sync --frozen
+
+      - name: Check Ruff linting
+        run: uv run ruff check .
+
+      - name: Check Ruff formatting
+        run: uv run ruff format --check .
+
+      - name: Apply database migrations
+        run: uv run alembic upgrade head
+
+      - name: Verify migration repeatability
+        run: uv run alembic upgrade head
+
+      - name: Run all tests
+        run: uv run pytest
