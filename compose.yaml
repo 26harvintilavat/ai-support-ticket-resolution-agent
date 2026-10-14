@@ -1,0 +1,56 @@
+name: ai-support-ticket-resolution-agent
+
+services:
+  postgres:
+    image: pgvector/pgvector:0.8.6-pg17-bookworm
+
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      POSTGRES_DB: ${POSTGRES_DB:-support_agent}
+
+    ports:
+      - "${POSTGRES_PORT:-5433}:5432"
+
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 5s
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+
+    environment:
+      APP_ENVIRONMENT: ${APP_ENVIRONMENT:-development}
+      APP_DATABASE_URL: >-
+        postgresql+asyncpg://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@postgres:5432/${POSTGRES_DB:-support_agent}
+
+    ports:
+      - "${API_PORT:-8000}:8000"
+
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "python",
+          "-c",
+          "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/ready', timeout=2)",
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+volumes:
+  postgres_data:

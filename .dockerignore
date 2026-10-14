@@ -1,0 +1,45 @@
+# Git
+.git
+.gitignore
+
+# Local Python environment
+.venv
+venv
+env
+
+# Python caches
+__pycache__
+*.py[cod]
+*$py.class
+
+# Test and tool caches
+.pytest_cache
+.ruff_cache
+.mypy_cache
+.pyright
+.coverage
+htmlcov
+
+# Local environment files and secrets
+.env
+.env.*
+!.env.example
+
+# IDE files
+.vscode
+.idea
+
+# Build artifacts
+build
+dist
+*.egg-info
+
+# Local documentation and tests are not required by the runtime image
+tests
+docs
+PROJECT_CONTEXT.md
+
+# Operating-system files
+.DS_Store
+Thumbs.db
+Desktop.ini
