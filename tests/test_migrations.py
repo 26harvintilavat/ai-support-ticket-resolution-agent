@@ -43,14 +43,27 @@ def load_initial_migration() -> ModuleType:
     return module
 
 
-def test_alembic_has_single_initial_head() -> None:
-    """The repository should begin with one migration head."""
+def test_alembic_has_single_current_head() -> None:
+    """The knowledge-table migration must be the current Alembic head."""
 
     config = create_alembic_config()
 
     scripts = ScriptDirectory.from_config(config)
 
-    assert scripts.get_heads() == ["0001_pgvector"]
+    assert scripts.get_heads() == ["0002_knowledge"]
+
+
+def test_knowledge_migration_follows_pgvector() -> None:
+    """The second migration must follow the pgvector foundation."""
+
+    config = create_alembic_config()
+
+    scripts = ScriptDirectory.from_config(config)
+
+    knowledge_migration = scripts.get_revision("0002_knowledge")
+
+    assert knowledge_migration is not None
+    assert knowledge_migration.down_revision == "0001_pgvector"
 
 
 def test_initial_migration_has_no_parent_revision() -> None:
