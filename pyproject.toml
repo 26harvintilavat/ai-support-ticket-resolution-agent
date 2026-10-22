@@ -28,6 +28,7 @@ addopts = [
     "-ra",
     "--strict-config",
     "--strict-markers",
+    "--basetemp=.pytest_tmp",
 ]
 
 markers = [
