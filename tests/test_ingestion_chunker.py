@@ -106,7 +106,10 @@ def test_long_paragraph_is_split_and_overlapped() -> None:
 
     assert len(chunks) > 1
 
-    assert any(later.start_char < earlier.end_char for earlier, later in zip(chunks, chunks[1:]))
+    assert any(
+        later.start_char < earlier.end_char
+        for earlier, later in zip(chunks, chunks[1:], strict=False)
+    )
 
     assert all(len(chunk.text) <= 80 for chunk in chunks)
 
