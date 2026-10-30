@@ -60,7 +60,7 @@ def test_pgvector_extension_and_migration(
     extension_enabled, revision = asyncio.run(verify())
 
     assert extension_enabled is True
-    assert revision == "0002_knowledge"
+    assert revision == "0003_vectors"
 
 
 @pytest.mark.integration

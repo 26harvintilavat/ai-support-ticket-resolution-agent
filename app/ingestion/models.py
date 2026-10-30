@@ -2,6 +2,7 @@
 
 from datetime import datetime
 
+from pgvector.sqlalchemy import VECTOR
 from sqlalchemy import (
     CheckConstraint,
     DateTime,
@@ -14,6 +15,7 @@ from sqlalchemy import (
 )
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
+from app.ingestion.embeddings import DEFAULT_EMBEDDING_DIMENSIONS, DEFAULT_MODEL_NAME
 from app.orm import Base
 
 
@@ -118,6 +120,11 @@ class KnowledgeChunk(Base):
             "char_length(btrim(text)) > 0",
             name="ck_knowledge_chunks_text_nonblank",
         ),
+        CheckConstraint(
+            "(embedding IS NULL AND embedding_model IS NULL) OR "
+            f"(embedding IS NOT NULL AND embedding_model = '{DEFAULT_MODEL_NAME}')",
+            name="ck_knowledge_chunks_embedding_contract",
+        ),
     )
 
     id: Mapped[int] = mapped_column(
@@ -157,6 +164,11 @@ class KnowledgeChunk(Base):
     section_title: Mapped[str | None] = mapped_column(
         String(200),
     )
+
+    embedding: Mapped[list[float] | None] = mapped_column(
+        VECTOR(DEFAULT_EMBEDDING_DIMENSIONS), nullable=True
+    )
+    embedding_model: Mapped[str | None] = mapped_column(String(200), nullable=True)
 
     document: Mapped[KnowledgeDocument] = relationship(
         back_populates="chunks",
